@@ -1,0 +1,6 @@
+
+Run Dumpcams
+
+Loads a list of http://ip/path/to/cam.cgi urls from cam.txt and saves images to frame-ip-number.jpg
+
+
