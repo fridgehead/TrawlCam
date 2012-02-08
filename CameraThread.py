@@ -4,14 +4,16 @@ import re
 import Image
 import StringIO
 import threading
+import sys
 
 class CameraThread(threading.Thread):
 	def __init__(self, ip, path):
 		threading.Thread.__init__(self)
-		self.ip = ip
-		self.path = path
+		self.ip = ip.strip()
+		self.path = path.strip()
 		self.kill = False
 		self.pic = None
+		print "created camera for ip: %s, url: %s;" %(ip, path)
 
 
 	def gotFrame(self,dat, fno):
@@ -29,6 +31,7 @@ class CameraThread(threading.Thread):
 				print "login failure, exiting.."
 				self.kill = True
 			boundary = res.getheader("content-type")
+			print boundary
 			boundary = boundary[boundary.find("boundary=")+9:]
 
 			buf = res.read(100) 
@@ -50,7 +53,7 @@ class CameraThread(threading.Thread):
 					buf = "".join(sp[nextchunk:])
 
 		except:
+			print "error for : " + self.ip , sys.exc_info()
 			h.close()
-			print "error!"
 			self.kill = True
 		print "thread deaded!"	

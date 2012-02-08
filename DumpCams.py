@@ -1,7 +1,7 @@
 from CameraThread import CameraThread
 
 threads = []
-urllist = open("cam.txt", "r")
+urllist = open("knowngood", "r")
 
 for url in urllist:
 	url = url[7:]

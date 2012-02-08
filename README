@@ -4,3 +4,7 @@ Run Dumpcams
 Loads a list of http://ip/path/to/cam.cgi urls from cam.txt and saves images to frame-ip-number.jpg
 
 
+> Run "gametest.py"
+
+Displays 35 streams in a pygame window, urls are in "knowngood". escape quits but most of the time the threads get stuck and kill -9 has to come out and play
+

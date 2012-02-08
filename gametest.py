@@ -11,9 +11,9 @@ class testsprite(pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self)
 		self.x, self.y = pos
 		self.url = url
-		self.camera = CameraThread(url[0], url[1])
+		self.camera = None #CameraThread(url[0], url[1])
 		self.stop = False
-		self.camera.start()
+		#self.camera.start()
 		self.image = pygame.image.load("lol.jpg")
 		self.rect = self.image.get_rect()
 		
@@ -22,20 +22,23 @@ class testsprite(pygame.sprite.Sprite):
 		self.stop = True
 		self.camera.kill = True
 		self.camera.join()
+		self.image = pygame.image.load("lol.jpg")
 	
 	def startCamera(self):
 		print "cam start.."
 		self.stop = False
-		self.camera.kill = False
+		if self.camera != None:
+			self.camera.kill = False
 		self.camera = CameraThread(self.url[0], self.url[1])
 		self.camera.start()
 
 	def update(self):
-		pic = self.camera.pic
-		if pic is not None:
-			self.image = pygame.transform.scale(pygame.image.frombuffer(pic.tostring(), pic.size, 'RGB'), (160,120))
+		if self.camera != None:
+			pic = self.camera.pic
+			if pic is not None:
+				self.image = pygame.transform.scale(pygame.image.frombuffer(pic.tostring(), pic.size, 'RGB'), (160,120))
 
-			self.rect = self.image.get_rect()
+				self.rect = self.image.get_rect()
 		self.rect.topleft = (self.x, self.y)
 
 
@@ -43,8 +46,21 @@ pygame.init()
 screen = pygame.display.set_mode((1000,680))
 running = 1
 spriteGroup = pygame.sprite.Group()
-spriteGroup.add(testsprite((0,0), ("127.0.0.1:9000", "/")))
-
+urllist = open("knowngood","r")
+y = 0
+for i in range(35):
+	url = urllist.readline()
+	url = url[7:]
+	ip = url[:url.find('/')]
+	path = url[url.find('/'):] 
+	x = i % 6
+	if x == 5:
+		y+=1
+		y %= 5
+	g = testsprite((160 * x,120 * y), (ip, path))
+	spriteGroup.add(g)
+	g.startCamera()
+	
 
 
 while running:
