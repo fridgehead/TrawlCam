@@ -16,6 +16,7 @@ class testsprite(pygame.sprite.Sprite):
 		#self.camera.start()
 		self.image = pygame.image.load("lol.jpg")
 		self.rect = self.image.get_rect()
+		self.scale = 1
 		
 	def stopCamera(self):
 		print "cam stop.."
@@ -31,12 +32,15 @@ class testsprite(pygame.sprite.Sprite):
 			self.camera.kill = False
 		self.camera = CameraThread(self.url[0], self.url[1])
 		self.camera.start()
+	
+	def setScale(self, scale):
+		self.scale = scale
 
 	def update(self):
 		if self.camera != None:
 			pic = self.camera.pic
 			if pic is not None:
-				self.image = pygame.transform.scale(pygame.image.frombuffer(pic.tostring(), pic.size, 'RGB'), (160,120))
+				self.image = pygame.transform.scale(pygame.image.frombuffer(pic.tostring(), pic.size, 'RGB'), (160 * self.scale, 120 * self.scale))
 
 				self.rect = self.image.get_rect()
 		self.rect.topleft = (self.x, self.y)
@@ -73,12 +77,22 @@ while running:
 					s.startCamera()
 				else:
 					s.stopCamera()
+	
 		else:
 			pass
+	current = None
+	for g in spriteGroup:
+		if g.rect.collidepoint(pygame.mouse.get_pos()):
+			g.setScale(2)
+			current = g
+		else:
+			g.setScale(1)
 
 	screen.fill((0,0,0))
 	spriteGroup.update()
 	spriteGroup.draw(screen)
+	if current != None:
+		screen.blit(current.image, current.rect)
 	pygame.display.flip()
 
 #kill threads

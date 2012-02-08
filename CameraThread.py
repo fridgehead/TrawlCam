@@ -31,7 +31,6 @@ class CameraThread(threading.Thread):
 				print "login failure, exiting.."
 				self.kill = True
 			boundary = res.getheader("content-type")
-			print boundary
 			boundary = boundary[boundary.find("boundary=")+9:]
 
 			buf = res.read(100) 
